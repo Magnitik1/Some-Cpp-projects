@@ -1,0 +1,85 @@
+//лабіринт
+
+#include <iostream>
+#include<time.h>
+#include<windows.h>
+#include<conio.h>
+using namespace std;
+int main() {
+	srand(time(0));
+	const int s = 21,s2=37;
+	int ss = s, ss2 = s2;
+	string lab[s][s2] = { " " };
+	int i, j, k = 0,a,o=0,o2=1,u=0;
+	string f = ".";
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	SetConsoleTextAttribute(handle, FOREGROUND_GREEN| FOREGROUND_RED);
+	for (i = 0; i < s; i++) {
+		for (j = 0; j < s2; j++) {
+			lab[i][j] = "#";
+			if (i % 2 != 0 && j % 2 != 0)lab[i][j] = "1";
+		}
+	}j = 1;
+	i = 1;
+	for (i; i < s; i) {
+		for (j; j < s2; j) {
+			o = 1;
+			if (lab[i][j + 2] != "1" && lab[i][j - 2] != "1" && lab[i + 2][j] != "1" && lab[i - 2][j] != "1") { o2 = 0; }
+			if (o2 == 1) {
+				do {
+					a = rand() % 4 + 1;
+					if (a == 1) { if (j > s2 - 3)continue; if (lab[i][j + 2] == "1") { lab[i][j + 1] =f; lab[i][j + 2] = f; o = 0; j += 2; u++; } }
+					if (a == 2) { if (j < 3)continue; if (lab[i][j - 2] == "1") { lab[i][j - 1] = f; lab[i][j - 2] = f; o = 0; j -= 2; u++; } }
+					if (a == 3) { if (i > s - 3)continue; if (lab[i + 2][j] == "1") { lab[i + 1][j] = f; lab[i + 2][j] = f; o = 0; i += 2; u++; } }
+					if (a == 4) { if (i < 3)continue; if (lab[i - 2][j] == "1") { lab[i - 1][j] = f; lab[i - 2][j] = f; o = 0; i -= 2; u++; } }
+				} while (o == 1);
+			}if (u == (ss/2)*(ss2/2)) { i = s; break; }
+
+			else {
+				do {
+					a = rand() % 4 + 1;
+					if (a == 1) {
+						if (j > s2 - 3)continue;
+						if (lab[i][j + 1] == f)j += 2; if (lab[i][j + 2] == f || lab[i - 2][j] ==f || lab[i + 2][j] == f)o2 = 1;
+					}
+
+					if (a == 2) {
+						if (j < 3)continue;
+						if (lab[i][j - 1] == f) { j -= 2; }if (lab[i][j - 2] == f || lab[i - 2][j] == f || lab[i + 2][j] == f)o2 = 1;
+					}
+
+					if (a == 3) {
+						if (i > s - 3)continue;
+						if (lab[i + 1][j] == f) { i += 2; } if (lab[i][j - 2] == f || lab[i][j + 2] == f || lab[i + 2][j] == f)o2 = 1;
+					}
+
+					if (a == 4) {
+						if (i < 3)continue;
+						if (lab[i - 1][j] == f) { i -= 2; }if (lab[i - 2][j] == f || lab[i][j - 2] == f || lab[i][j + 2] == f)o2 = 1;
+					}
+				} while (o2 == 0);
+			}
+		}
+	}o = 1;
+	string w,g = f;
+	int i2 = 1, j2 = 1;
+	lab[s-1][s2 - 2] = " ";
+	while (1) {lab[i2][j2] = 1;
+		for (i=0; i < s; i++) {
+			for (j=0; j < s2; j++) {
+				cout << lab[i][j];
+			}cout << endl;
+			if (o == 0) { cout << endl << "YOU WIN!!!"; return 0; }
+		}while (1) {
+			_kbhit();
+			w = _getch();
+			if (w == "s") { if (lab[i2 + 1][j2] == f || lab[i2 + 1][j2] == " ") { lab[i2][j2] = f; i2++; if (lab[i2][j2] == " ")o = 0; break; } }
+			if (w == "w") { if (lab[i2 - 1][j2] == f) { lab[i2][j2] = f; i2--; break; } }
+			if (w == "d") { if (lab[i2][j2 + 1] == f) { lab[i2][j2] = f; j2++; break; } }
+			if (w == "a") { if (lab[i2][j2 - 1] == f) { lab[i2][j2] = f; j2--; break; } }
+			if (w == "0")return 0;
+		}
+		system ("cls");
+	}
+}

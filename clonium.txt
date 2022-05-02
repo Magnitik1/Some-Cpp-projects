@@ -1,0 +1,759 @@
+//Your goal is to eat your enemies, when there >4 in one cell, it spreads in 4 directions
+
+#include <iostream>
+#include <windows.h>
+#include <time.h>
+using namespace std;
+class bot {
+	int xt, yt;
+public:
+	COORD hodbota(char ss1[7][9], char s) {
+		COORD c;
+		COORD cor[64];
+		cor[0].X = -1;
+		cor[0].Y = -1;
+		int con = 0;
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 9; j++) {
+
+				if ((ss1[i][j] >= s && ss1[i][j] <= s + 7) && (s >= '1' && s <= '7')) {
+					if (i > 0 && (ss1[i - 1][j] == 'c' || ss1[i - 1][j] == '#' || ss1[i - 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (i < 6 && (ss1[i + 1][j] == 'c' || ss1[i + 1][j] == '#' || ss1[i + 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j > 0 && (ss1[i][j - 1] == 'c' || ss1[i][j - 1] == '#' || ss1[i][j - 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j < 6 && (ss1[i][j + 1] == 'c' || ss1[i][j + 1] == '#' || ss1[i][j + 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					cor[con].X = j;
+					cor[con++].Y = i;
+				}
+				if ((ss1[i][j] >= s && ss1[i][j] <= s + 7) && (s >= 'a' && s <= 'z')) {
+					if (i > 0 && (ss1[i - 1][j] == '3' || ss1[i - 1][j] == '#' || ss1[i - 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (i < 6 && (ss1[i + 1][j] == '3' || ss1[i + 1][j] == '#' || ss1[i + 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j > 0 && (ss1[i][j - 1] == '3' || ss1[i][j - 1] == '#' || ss1[i][j - 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j < 6 && (ss1[i][j + 1] == '3' || ss1[i][j + 1] == '#' || ss1[i][j + 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					cor[con].X = j;
+					cor[con++].Y = i;
+				}
+				if ((ss1[i][j] >= s && ss1[i][j] <= s + 7) && (s >= 'A' && s <= 'Z')) {
+					if (i > 0 && (ss1[i - 1][j] == 'c' || ss1[i - 1][j] == '#' || ss1[i - 1][j] == '3')) { c.X = j; c.Y = i; return c; }
+					else if (i < 6 && (ss1[i + 1][j] == 'c' || ss1[i + 1][j] == '#' || ss1[i + 1][j] == '3')) { c.X = j; c.Y = i; return c; }
+					else if (j > 0 && (ss1[i][j - 1] == 'c' || ss1[i][j - 1] == '#' || ss1[i][j - 1] == '3')) { c.X = j; c.Y = i; return c; }
+					else if (j < 6 && (ss1[i][j + 1] == 'c' || ss1[i][j + 1] == '#' || ss1[i][j + 1] == '3')) { c.X = j; c.Y = i; return c; }
+					cor[con].X = j;
+					cor[con++].Y = i;
+				}if ((ss1[i][j] >= s && ss1[i][j] <= s + 7) && (s >= '!' && s <= '0')) {
+					if (i > 0 && (ss1[i - 1][j] == 'c' || ss1[i - 1][j] == '3' || ss1[i - 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (i < 6 && (ss1[i + 1][j] == 'c' || ss1[i + 1][j] == '3' || ss1[i + 1][j] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j > 0 && (ss1[i][j - 1] == 'c' || ss1[i][j - 1] == '3' || ss1[i][j - 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					else if (j < 6 && (ss1[i][j + 1] == 'c' || ss1[i][j + 1] == '3' || ss1[i][j + 1] == 'C')) { c.X = j; c.Y = i; return c; }
+					cor[con].X = j;
+					cor[con++].Y = i;
+				}
+			}
+		}
+		return cor[rand() % con];
+	}
+};
+
+void setcur(int x, int y)
+{
+	COORD coord;
+	coord.X = x;
+	coord.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+};
+void SetColor(int text, int bg) {
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hStdOut, (WORD)((bg << 4) | text));
+}
+HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+void fontsize(int, int);
+int main()
+{
+	srand(time(0));
+	int num = 0, nnum = 0;
+	string fnum;
+	long long turn = 0;
+	SetConsoleTitle(L"Clonium");
+	int a, b, bn = 0;
+	int pt = 0;
+	char bt;
+	const int e = 7, e1 = 7;
+	char ss[e][e1 + 2], ss1[e][e1 + 2], ss3[e][e1 + 2];
+	do {
+		cout << "Number of players(2-4):\n";
+		cin >> fnum;
+		system("cls");
+	} while (fnum != "2" && fnum != "3" && fnum != "4");
+	num = fnum[0] - '0';
+	do {
+		cout << "Add bot?(Y/N)    " << bn << endl;
+		cin >> bt;
+
+		if (bt == 'Y' || bt == 'y') { bn++; }
+		if (bt == 'N' || bt == 'n')break;
+		if (bn >= num - 1) { cout << "Max number of bots"; setcur(17, 0); cout << bn; Sleep(350); break; }
+		system("cls");
+	} while (1);
+	system("cls");
+	char ff;
+	int ran1 = 5;
+	int ran2 = 5;
+	int ran3 = 5;
+	char pt1 = '1';
+	char pt1s[4] = { '}','}','}','}' };
+	int bnum = bn;
+
+
+	if (bn >= 1)pt1s[0] = '1';
+	if (bn >= 2)pt1s[1] = 'A';
+	if (bn >= 3)pt1s[2] = '!';
+
+	fontsize(1, 100);
+	for (int i = 0; i < e; i++) {
+		for (int j = 0; j < e1; j++) {
+			if (i == 1 && j == 5) {
+				SetColor(7, 12);
+				ss[i][j] = '3';
+				ss1[i][j] = '3';
+			}
+			else if (i == 5 && j == 1) {
+				SetColor(11, 1);
+				ss[i][j] = '3';
+				ss1[i][j] = 'c';
+			}
+			else {
+				SetColor(0, 8);
+				ss[i][j] = ' ';
+				ss1[i][j] = ' ';
+			}
+			if (num >= 3) {
+				if (i == 1 && j == 1) {
+					SetColor(15, 5);
+					ss[i][j] = '3';
+					ss1[i][j] = 'C';
+				}
+			}
+			if (num == 4) {
+				if (i == 5 && j == 5) {
+					SetColor(14, 6);
+					ss[i][j] = '3';
+					ss1[i][j] = '#';
+				}
+			}
+			ss3[i][j] = ss[i][j];
+			cout << ss[i][j];
+		}cout << endl;
+	}
+
+	if (bn > 0) {
+		setcur(8, 1);
+		SetColor(15, 0);
+		cout << "bot";
+		if (bn > 1)cout << "s";
+		cout << ":";
+		if (bn >= 1) {
+			SetColor(7, 12);
+			cout << ' ';
+		}
+		if (bn >= 2) {
+			SetColor(15, 5);
+			cout << ' ';
+		}
+		if (bn >= 3) {
+			SetColor(14, 6);
+			cout << ' ';
+		}
+		setcur(0, 7);
+	}
+	nnum = num;
+	ss[2][e1 + 1] = ' ';
+	int x, y;
+	bool uc = 1, yc = 1;
+	bot a1;
+	int ta = 1, t1 = 1, tA = 6, ts = 6;
+	if (num >= 3)tA = 1;
+	if (num == 4)ts = 1;
+	bool uj1 = 1, uja = 1, ujA = 6, ujs = 6;
+	if (num >= 3) { ujA = 1; }
+	if (num == 4) { ujs = 1; }
+	COORD io;
+	io.Y = 3;
+	io.X = e1 + 1;
+	while (1) {//game loop
+		HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
+		INPUT_RECORD InputRecord;
+		DWORD Events;
+		COORD coord;
+		SetConsoleMode(hin, ENABLE_PROCESSED_INPUT | ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS | ~ENABLE_QUICK_EDIT_MODE);
+		InputRecord.Event.MouseEvent.dwButtonState = 0;
+		InputRecord.Event.MouseEvent.dwMousePosition = io;
+		InputRecord.Event.KeyEvent.wRepeatCount = 0;
+		InputRecord.Event.KeyEvent.bKeyDown = 0;
+		InputRecord.EventType = 0;
+		InputRecord.Event.WindowBufferSizeEvent.dwSize = io;
+		bool hod = 0;
+
+
+		if (bn == 1) { if (pt1 != pt1s[1])ReadConsoleInput(hin, &InputRecord, 1, &Events); }
+		if (pt1 != pt1s[1] && pt1 != pt1s[2] && pt1 != pt1s[3])ReadConsoleInput(hin, &InputRecord, 1, &Events);
+		if (pt1 != pt1s[0] && pt1 != pt1s[1] && pt1 != pt1s[2])if (InputRecord.Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)hod = 1;
+
+		if ((hod) || (pt1 == pt1s[0] || pt1 == pt1s[1] || pt1 == pt1s[2])) {
+			if (!hod && (pt1 != pt1s[0] && pt1 != pt1s[1] && pt1 != pt1s[2]))continue;
+			InputRecord.Event.MouseEvent.dwButtonState = 0;
+			if (pt1 == pt1s[0] || pt1 == pt1s[1] || pt1 == pt1s[2]) { if (InputRecord.Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) { continue; } }
+
+			if (pt1 != pt1s[0] && pt1 != pt1s[1] && pt1 != pt1s[2]) {
+				if (yc) { setcur(8, 1); SetColor(0, 0); cout << "        "; setcur(0, 7); yc = 0; }
+				coord.X = InputRecord.Event.MouseEvent.dwMousePosition.X;
+				coord.Y = InputRecord.Event.MouseEvent.dwMousePosition.Y;
+				x = coord.X;
+				y = coord.Y;
+				if (yc == 0)if ((ss1[y][x] >= pt1s[0] && ss1[y][x] <= pt1s[0] + 7) || (ss1[y][x] >= pt1s[1] && ss1[y][x] <= pt1s[1] + 7) || (ss1[y][x] >= pt1s[2] && ss1[y][x] <= pt1s[2] + 7) || (ss1[y][x] >= pt1s[3] && ss1[y][x] <= pt1s[3] + 7)) { continue; }
+
+				if (uc)uc = 0;
+			}
+			else {
+				COORD c = a1.hodbota(ss1, pt1);
+				if (uc) { Sleep(600); uc = 0; }
+				x = c.X;
+				y = c.Y;
+			}
+
+
+			if (ss[y][x] == ' ' || (ss1[y][x] < '!' || ss1[y][x]>'z') || ((y != io.Y || x != io.X) && (y > e || x > e))) { continue; }
+			if (turn == 0) { if (ss1[y][x] == 'c')turn = 1; else if (ss1[y][x] == 'C')turn = 2; else if (ss1[y][x] == '#')turn = 3; else turn = 0; }
+			pt = turn % num;
+			if (nnum == 2) {
+				if (pt == 0) { pt1 = 'a'; }
+				if (pt == 1) { pt1 = '1'; }
+				if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+				if (pt == 0) { if (ss1[y][x] < '0' || ss1[y][x] > '9')continue; }//1
+			}
+			if (nnum == 3) {
+				if (uj1 == 0) {
+					if (pt == 0) { pt++; turn++; }
+					if (pt == 1) { pt1 = 'A'; }
+					if (pt == 2) { pt1 = 'a'; }
+					if (uja == 0) { system("cls"); SetColor(15, 5); cout << "You Win!"; return 0; }
+					if (ujA == 0) { system("cls"); SetColor(11, 1); cout << "You Win!"; return 0; }
+					if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+					if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+				}
+				else if (uja == 0) {
+					if (pt == 0) { pt1 = 'A'; }
+					if (pt == 1) { pt++; turn++; }
+					if (pt == 2) { pt1 = '1'; }
+					if (ujA == 0) { system("cls"); SetColor(7, 12); cout << "You Win!"; return 0; }
+					if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+					if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+				}
+				else if (ujA == 0) {
+					if (pt == 1) { pt1 = '1'; }
+					if (pt == 2) { pt = 0; turn++; }
+					if (pt == 0) { pt1 = 'a'; }
+					if (pt == 0) { if (ss1[y][x] > '9' || ss1[y][x] < '0')continue; }//3
+					if (pt == 1) { if (ss1[y][x] < 'a')continue; }//a
+				}
+				else {
+					if (pt == 0) { pt1 = 'a'; }
+					if (pt == 1) { pt1 = 'A'; }
+					if (pt == 2) { pt1 = '1'; }
+					if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//1
+					if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+					if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+				}
+			}
+			if (nnum == 4) {
+				if (uj1 == 0) {
+					if (ujs == 0) {
+						if (pt == 0) { pt++; turn++; }
+						if (pt == 1) { pt1 = 'A'; }
+						if (pt == 2) { pt1 = 'a'; }
+						if (pt == 3) { pt = 1; turn += 2; }
+						if (pt == 1) { pt1 = 'A'; }
+						if (uja == 0) { system("cls"); SetColor(15, 5);  cout << "You Win!"; return 0; }
+						if (ujA == 0) { system("cls"); SetColor(11, 1);  cout << "You Win!"; return 0; }
+						if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+					}
+					else if (uja == 0) {
+						if (pt == 0) { pt++; turn++; }
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = '!'; }
+						if (pt == 3) { pt1 = 'A'; }
+						if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+						if (ujs == 0) { system("cls"); SetColor(15, 5);  cout << "You Win!"; return 0; }
+						if (ujA == 0) { system("cls"); SetColor(14, 6);  cout << "You Win!"; return 0; }
+					}
+					else if (ujA == 0) {
+						if (pt == 0) { pt++; turn++; }
+						if (pt == 1) { pt1 = '!'; }
+						if (pt == 2) { pt++; turn++; }
+						if (pt == 3) { pt1 = 'a'; }
+						if (uja == 0) { system("cls"); SetColor(14, 6); cout << "You Win!"; return 0; }
+						if (ujs == 0) { system("cls"); SetColor(11, 1); cout << "You Win!"; return 0; }
+						if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+						if (pt == 1) { if (ss1[y][x] < 'a')continue; }//a
+					}
+					else {
+						if (pt == 0) { turn++; pt++; }
+						if (pt == 1) { pt1 = 'A'; }
+						if (pt == 2) { pt1 = '!'; }
+						if (pt == 3) { pt1 = 'a'; }
+						if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+						if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+					}
+				}
+				else if (ujA == 0) {
+					if (ujs == 0) {
+						if (pt == 1) { pt1 = 'a'; }
+						if (pt == 2) { pt = 0; turn += 2; }
+						if (pt == 3) { pt = 0; turn++; }
+						if (pt == 0) { pt1 = '1'; }
+						if (uja == 0) { system("cls"); SetColor(7, 12); cout << "You Win!"; return 0; }
+						if (pt == 0) { if (ss1[y][x] < '0' || ss1[y][x] > '9')continue; }//1
+						if (pt == 1) { if (ss1[y][x] < 'a')continue; }//a
+					}
+					else if (uja == 0) {
+						if (pt == 0) { pt1 = '!'; }
+						if (pt == 1) { pt += 2; turn += 2; }
+						if (pt == 2) { pt++; turn++; }
+						if (pt == 3) { pt1 = '1'; }
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+						if (pt == 3) { if (ss1[y][x] > '0')continue; }//s
+					}
+					else {
+						if (pt == 0) { pt1 = 'a'; }
+						if (pt == 1) { pt1 = '!'; }
+						if (pt == 2) { pt++; turn++; }
+						if (pt == 3) { pt1 = '1'; }
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+						if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+						if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+					}
+				}
+				else if (uja == 0) {
+					if (ujs == 0) {
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = '1'; }
+						if (pt == 3) { pt = 0; turn++; }
+						if (pt == 0) { pt1 = 'A'; }
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+					}
+					else {
+						if (pt == 0) { pt1 = 'A'; }
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = '!'; }
+						if (pt == 3) { pt1 = '1'; }
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+						if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+					}
+				}
+				else if (ujs == 0) {
+					if (uja == 0) {
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = 'A'; turn++; }
+						if (pt == 3) { pt = 0; turn++; }
+						if (pt == 0) { pt1 = '1'; turn++; }
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+					}
+					else {
+						if (pt == 1) { pt1 = 'A'; }
+						if (pt == 2) { pt1 = '1'; }
+						if (pt == 3) { pt = 0; turn++; }
+						if (pt == 0) { pt1 = 'a'; }
+						if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+						if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+						if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+					}
+				}
+				else if (uja == 0) {
+					if (pt == 0) { pt1 = 'A'; turn++; }
+					if (pt == 1) { pt++; turn++; }
+					if (pt == 2) { pt1 = '!'; turn++; }
+					if (pt == 3) { pt1 = '1'; turn++; }
+					if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+					if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+					if (pt == 3) { if (ss1[y][x] > '0' || ss1[y][x] < '!')continue; }//s
+				}
+				else {
+					if (pt == 0) { pt1 = 'a'; }
+					if (pt == 1) { pt1 = 'A'; }
+					if (pt == 2) { pt1 = '!'; }
+					if (pt == 3) { pt1 = '1'; }
+
+					if (pt == 0) { if (ss1[y][x] >= 'A' || ss1[y][x] < '0')continue; }//3
+					if (pt == 1) { if (ss1[y][x] < 'Z')continue; }//a
+					if (pt == 2) { if (ss1[y][x] > 'Z' || ss1[y][x] < 'A')continue; }//A
+					if (pt == 3) { if (ss1[y][x] > '0')continue; }//s
+				}
+			}
+			turn++;
+			char t = ' ';
+			if (ss1[y][x] >= '1' && ss1[y][x] <= '6')t = '1';
+			if (ss1[y][x] >= 'a')t = 'a';
+			if (ss1[y][x] >= 'A' && ss1[y][x] < 'Z')t = 'A';
+			if (ss1[y][x] < '0')t = '!';
+			if (ss[y][x] <= '4') { ss1[y][x]++; ss[y][x]++; }
+			setcur(0, 0);
+			for (int i = 0; i < e; i++) {
+				for (int j = 0; j < e1; j++) {
+					if (ss1[i][j] <= '4' && ss1[i][j] > '0') { SetColor(7, 12); if (pt == 0) if (ss[i][j] != ss3[i][j]) { SetColor(10, 12); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] >= 'a') { SetColor(11, 1); if (pt == 1)if (ss[i][j] != ss3[i][j]) { SetColor(10, 1); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); if (pt == 2)if (ss[i][j] != ss3[i][j]) { SetColor(10, 5); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); if (pt == 3)if (ss[i][j] != ss3[i][j]) { SetColor(10, 6); ss3[i][j] = ss[i][j]; } }
+					else if (ss[i][j] == ' ') SetColor(0, 8);
+					cout << ss[i][j];
+				}	if (i == 3) {
+					SetColor(0, 0);
+					cout << ' ';
+					if (pt1 == '1') { SetColor(7, 12); }
+					else if (pt1 == 'a') { SetColor(11, 1); }
+					else if (pt1 == 'A') { SetColor(15, 5); }
+					else if (pt1 == '!') { SetColor(14, 6); }
+					cout << ' ';
+				}cout << endl;
+			}
+			Sleep(300);
+			if (ss[y][x] >= '4') {
+				bool f = 1;
+				int xn[e * e], yn[e * e], xyn = 0;
+				while (f) {
+					f = 0;
+					for (int i = 0; i < e; i++) {
+						for (int j = 0; j < e1; j++) {
+							if (ss[i][j] >= '4') {
+								f = 1;
+								ss3[y][x] = ss[y][x];
+								xn[xyn] = j;
+								yn[xyn] = i;
+								xyn++;
+							}
+						}
+					}
+					for (int te = 0; te < xyn; te++) {
+						x = xn[te];
+						y = yn[te];
+						if (ss[y][x] >= '4') {
+							if (ss1[y][x] <= '4' && ss1[y][x] >= '1') { ss1[y][x] = ' '; ss[y][x] = ' '; }
+							else if (ss1[y][x] > '4' && ss1[y][x] < '9') { ss1[y][x] = '1'; ss[y][x] = '1'; }
+							if (ss1[y][x] <= 'Z' && ss1[y][x] >= 'A') { ss1[y][x] = ' '; ss[y][x] = ' '; }
+							else if (ss1[y][x] > 'D' && ss1[y][x] < 'Z') { ss1[y][x] = 'A'; ss[y][x] = '1'; }
+							if (ss1[y][x] <= 'z' && ss1[y][x] >= 'a') { ss1[y][x] = ' '; ss[y][x] = ' '; }
+							else if (ss1[y][x] > 'd' && ss1[y][x] < 'z') { ss1[y][x] = 'a'; ss[y][x] = '1'; }
+							if (ss1[y][x] <= '$' && ss1[y][x] >= '!') { ss1[y][x] = ' '; ss[y][x] = ' '; }
+							else if (ss1[y][x] > '$' && ss1[y][x] < '0') { ss1[y][x] = '!'; ss[y][x] = '1'; }
+							if (y - 1 >= 0)
+								if (ss[y - 1][x] != ' ') {
+									if (t == '1') {
+										if (ss1[y - 1][x] > 'Z')ss1[y - 1][x] -= 48;
+										else if (ss1[y - 1][x] >= 'A' && ss1[y - 1][x] < 'Z')ss1[y - 1][x] -= 16;
+										else if (ss1[y - 1][x] < '0')ss1[y - 1][x] += 16;
+									}
+									else if (t == 'a') {
+										if (ss1[y - 1][x] < '9' && ss1[y - 1][x] > '0')ss1[y - 1][x] += 48;
+										else if (ss1[y - 1][x] > '9' && ss1[y - 1][x] < 'Z')ss1[y - 1][x] += 32;
+										else if (ss1[y - 1][x] < '0')ss1[y - 1][x] += 64;
+									}
+									else if (t == 'A') {
+										if (ss1[y - 1][x] > 'Z')ss1[y - 1][x] -= 32;
+										else if (ss1[y - 1][x] < '9' && ss1[y - 1][x] > '0')ss1[y - 1][x] += 16;
+										else if (ss1[y - 1][x] < '0')ss1[y - 1][x] += 32;
+									}
+									else if (t == '!') {
+										if (ss1[y - 1][x] >= '1' && ss1[y - 1][x] < '9')ss1[y - 1][x] -= 16;
+										else if (ss1[y - 1][x] < 'Z' && ss1[y - 1][x] >= 'A')ss1[y - 1][x] -= 32;
+										else if (ss1[y - 1][x] >= 'a')   ss1[y - 1][x] -= 64;
+									}
+									ss[y - 1][x]++; ss1[y - 1][x]++;
+								}
+								else { ss1[y - 1][x] = t; ss[y - 1][x] = '1'; }
+							if (y + 1 < e)
+								if (ss[y + 1][x] != ' ') {
+									if (t == '1') {
+										if (ss1[y + 1][x] > 'Z')ss1[y + 1][x] -= 48;
+										else if (ss1[y + 1][x] >= 'A' && ss1[y + 1][x] < 'Z')ss1[y + 1][x] -= 16;
+										else if (ss1[y + 1][x] < '0')ss1[y + 1][x] += 16;
+									}
+									else if (t == 'a') {
+										if (ss1[y + 1][x] < '9' && ss1[y + 1][x] > '0')ss1[y + 1][x] += 48;
+										else if (ss1[y + 1][x] > '9' && ss1[y + 1][x] < 'Z')ss1[y + 1][x] += 32;
+										else if (ss1[y + 1][x] < '0')ss1[y + 1][x] += 64;
+									}
+									else if (t == 'A') {
+										if (ss1[y + 1][x] > 'Z')ss1[y + 1][x] -= 32;
+										else if (ss1[y + 1][x] < '9' && ss1[y + 1][x] > '0')ss1[y + 1][x] += 16;
+										else if (ss1[y + 1][x] < '0')ss1[y + 1][x] += 32;
+									}
+									else if (t == '!') {
+										if (ss1[y + 1][x] >= '1' && ss1[y + 1][x] < '9')ss1[y + 1][x] -= 16;
+										else if (ss1[y + 1][x] < 'Z' && ss1[y + 1][x] >= 'A')ss1[y + 1][x] -= 32;
+										else if (ss1[y + 1][x] >= 'a')   ss1[y + 1][x] -= 64;
+									}
+									ss[y + 1][x]++; ss1[y + 1][x]++;
+								}
+								else { ss1[y + 1][x] = t; ss[y + 1][x] = '1'; }
+							if (x - 1 >= 0)
+								if (ss[y][x - 1] != ' ') {
+									if (t == '1') {
+										if (ss1[y][x - 1] > 'Z')ss1[y][x - 1] -= 48;
+										else if (ss1[y][x - 1] >= 'A' && ss1[y][x - 1] < 'Z')ss1[y][x - 1] -= 16;
+										else if (ss1[y][x - 1] < '0')ss1[y][x - 1] += 16;
+									}
+									else if (t == 'a') {
+										if (ss1[y][x - 1] < '9' && ss1[y][x - 1] > '0')ss1[y][x - 1] += 48;
+										else if (ss1[y][x - 1] > '9' && ss1[y][x - 1] < 'Z')ss1[y][x - 1] += 32;
+										else if (ss1[y][x - 1] < '0')ss1[y][x - 1] += 64;
+									}
+									else if (t == 'A') {
+										if (ss1[y][x - 1] > 'Z')ss1[y][x - 1] -= 32;
+										else if (ss1[y][x - 1] < '9' && ss1[y][x - 1] > '0')ss1[y][x - 1] += 16;
+										else if (ss1[y][x - 1] < '0')ss1[y][x - 1] += 32;
+									}
+									else if (t == '!') {
+										if (ss1[y][x - 1] >= '1' && ss1[y][x - 1] < '9')ss1[y][x - 1] -= 16;
+										else if (ss1[y][x - 1] < 'Z' && ss1[y][x - 1] >= 'A')ss1[y][x - 1] -= 32;
+										else if (ss1[y][x - 1] >= 'a')   ss1[y][x - 1] -= 64;
+									}
+									ss[y][x - 1]++; ss1[y][x - 1]++;
+								}
+								else { ss1[y][x - 1] = t; ss[y][x - 1] = '1'; }
+							if (x + 1 < e1)
+								if (ss[y][x + 1] != ' ') {
+									if (t == '1') {
+										if (ss1[y][x + 1] > 'Z')ss1[y][x + 1] -= 48;
+										else if (ss1[y][x + 1] >= 'A' && ss1[y][x + 1] < 'Z')ss1[y][x + 1] -= 16;
+										else if (ss1[y][x + 1] < '0')ss1[y][x + 1] += 16;
+									}
+									else if (t == 'a') {
+										if (ss1[y][x + 1] < '9' && ss1[y][x + 1] > '0')ss1[y][x + 1] += 48;
+										else if (ss1[y][x + 1] > '9' && ss1[y][x + 1] < 'Z')ss1[y][x + 1] += 32;
+										else if (ss1[y][x + 1] < '0')ss1[y][x + 1] += 64;
+									}
+									else if (t == 'A') {
+										if (ss1[y][x + 1] > 'Z')ss1[y][x + 1] -= 32;
+										else if (ss1[y][x + 1] < '9' && ss1[y][x + 1] > '0')ss1[y][x + 1] += 16;
+										else if (ss1[y][x + 1] < '0')ss1[y][x + 1] += 32;
+									}
+									else if (t == '!') {
+										if (ss1[y][x + 1] >= '1' && ss1[y][x + 1] < '9')ss1[y][x + 1] -= 16;
+										else if (ss1[y][x + 1] < 'Z' && ss1[y][x + 1] >= 'A')ss1[y][x + 1] -= 32;
+										else if (ss1[y][x + 1] >= 'a')   ss1[y][x + 1] -= 64;
+									}
+									ss[y][x + 1]++; ss1[y][x + 1]++;
+								}
+								else { ss1[y][x + 1] = t; ss[y][x + 1] = '1'; }
+						}
+					}
+					setcur(0, 0);
+					for (int i = 0; i < e; i++) {
+						for (int j = 0; j < e1; j++) {
+							if (ss1[i][j] <= '6' && ss1[i][j] > '0') { SetColor(7, 12); if (pt == 0) if (ss[i][j] != ss3[i][j]) { SetColor(10, 12); ss3[i][j] = ss[i][j]; } }
+							else if (ss1[i][j] >= 'a') { SetColor(11, 1); if (pt == 1)if (ss[i][j] != ss3[i][j]) { SetColor(10, 1); ss3[i][j] = ss[i][j]; } }
+							else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); if (pt == 2)if (ss[i][j] != ss3[i][j]) { SetColor(10, 5); ss3[i][j] = ss[i][j]; } }
+							else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); if (pt == 3)if (ss[i][j] != ss3[i][j]) { SetColor(10, 6); ss3[i][j] = ss[i][j]; } }
+							else if (ss1[i][j] == ' ') SetColor(0, 8);
+							cout << ss[i][j];
+							ss3[i][j] = ss[i][j];
+						}cout << endl;
+					}if (f)Sleep(444);
+				}
+			}
+			setcur(0, 0);
+			for (int i = 0; i < e; i++) {
+				for (int j = 0; j < e1; j++) {
+					if (ss1[i][j] <= '4' && ss1[i][j] > '0') { SetColor(7, 12); if (pt == 0) if (ss[i][j] != ss3[i][j]) { SetColor(10, 12); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] >= 'a') { SetColor(11, 1); if (pt == 1)if (ss[i][j] != ss3[i][j]) { SetColor(10, 1); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); if (pt == 2)if (ss[i][j] != ss3[i][j]) { SetColor(10, 5); ss3[i][j] = ss[i][j]; } }
+					else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); if (pt == 3)if (ss[i][j] != ss3[i][j]) { SetColor(10, 6); ss3[i][j] = ss[i][j]; } }
+					else if (ss[i][j] == ' ') SetColor(0, 8);
+					cout << ss[i][j];
+				}cout << endl;
+			}Sleep(310);
+			setcur(0, 0);
+			if (ta != 6)ta = 0;
+			if (tA != 6)tA = 0;
+			if (t1 != 6)t1 = 0;
+			if (ts != 6)ts = 0;
+			for (int i = 0; i < e; i++) {
+				for (int j = 0; j < e1; j++) {
+					if (ss1[i][j] <= '4' && ss1[i][j] > '0') { SetColor(7, 12); }
+					else if (ss1[i][j] >= 'a') { SetColor(11, 1); }
+					else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); }
+					else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); }
+					else if (ss[i][j] == ' ') SetColor(0, 8);
+					cout << ss[i][j];
+					if (ta == 0)if (ss1[i][j] >= 'a')ta = 1;
+					if (t1 == 0)if (ss1[i][j] >= '1' && ss1[i][j] < '9')t1 = 1;
+					if (tA == 0)if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z')tA = 1;
+					if (ts == 0)if (ss1[i][j] < '0' && ss1[i][j] != ' ')ts = 1;
+				}
+				cout << endl;
+			}
+			if (tA == 0 || t1 == 0 || ts == 0 || ta == 0) {
+				if (nnum == 2) {
+					if (ta == 0) { system("cls"); SetColor(7, 12); cout << "You Win!"; return 0; }
+					if (t1 == 0) { system("cls"); SetColor(11, 1); cout << "You Win!"; return 0; }
+				}
+				if (nnum >= 3)if (ujA)if (tA == 0) { ujA = 0; turn += 2; tA = 6; }
+				if (uja)if (ta == 0) { uja = 0; turn += 2; ta = 6; }
+				if (nnum == 4)if (ujs)if (ts == 0) { ujs = 0; turn += 2; ts = 6; }
+				if (uj1)if (t1 == 0) { uj1 = 0; turn += 2; t1 = 6; }
+				if (nnum == 3) {
+					if (uj1 == 0) {
+						if (pt == 0) { pt++; turn++; }
+						if (pt == 1) { pt1 = 'A'; turn++; }
+						if (pt == 2) { pt1 = 'a'; turn++; }
+						if (uja == 0) { system("cls"); SetColor(15, 5); cout << "You Win!"; return 0; }
+						if (ujA == 0) { system("cls"); SetColor(11, 1); cout << "You Win!"; return 0; }
+					}
+					else if (uja == 0) {
+						if (pt == 0) { pt1 = '1'; turn++; }
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = 'A'; turn++; }
+						if (ujA == 0) { system("cls"); SetColor(7, 12); cout << "You Win!"; return 0; }
+						if (uj1 == 0) { system("cls"); SetColor(15, 5); cout << "You Win!"; return 0; }
+					}
+					else if (ujA == 0) {
+						if (pt == 1) { pt1 = '1'; turn++; }
+						if (pt == 3) { pt = 0; turn++; }
+						if (pt == 0) { pt1 = 'a'; turn++; }
+					}
+				}
+				if (nnum == 4) {
+					if (uj1 == 0) {
+						if (ujs == 0) {
+							if (pt == 0) { pt++; turn++; }
+							if (pt == 1) { pt1 = 'A'; turn++; }
+							if (pt == 2) { pt1 = 'a'; turn += 2; }
+							if (pt == 3) { pt = 1; turn += 2; }
+							if (pt == 1) { pt1 = 'A'; turn++; }
+							if (uja == 0) { system("cls"); SetColor(15, 5);  cout << "You Win!"; return 0; }
+							if (ujA == 0) { system("cls"); SetColor(11, 1);  cout << "You Win!"; return 0; }
+						}
+						else if (uja == 0) {
+							if (pt == 0) { pt++; turn++; }
+							if (pt == 1) { pt++; turn++; }
+							if (pt == 2) { pt1 = '!'; turn++; }
+							if (pt == 3) { pt1 = 'A'; turn += 2; }
+							if (ujs == 0) { system("cls"); SetColor(15, 5);  cout << "You Win!"; return 0; }
+							if (ujA == 0) { system("cls"); SetColor(14, 6);  cout << "You Win!"; return 0; }
+						}
+						else if (ujA == 0) {
+							if (pt == 0) { pt++; turn += 2; }
+							if (pt == 1) { pt1 = '!'; turn += 2; }
+							if (pt == 2) { pt++; turn += 2; }
+							if (pt == 3) { pt1 = 'a'; turn += 2; }
+							if (uja == 0) { system("cls"); SetColor(14, 6); cout << "You Win!"; return 0; }
+							if (ujs == 0) { system("cls"); SetColor(11, 1); cout << "You Win!"; return 0; }
+						}
+						else {
+							if (pt == 0) { pt++; turn++; }
+							if (pt == 1) { pt1 = 'A'; turn += 2; }
+							if (pt == 2) { pt1 = '!'; turn += 2; }
+							if (pt == 3) { pt1 = 'a'; turn += 2; }
+						}
+					}
+					else if (ujA == 0) {
+						if (ujs == 0) {
+							if (pt == 1) { pt1 = '1'; turn += 2; }
+							if (pt == 2) { pt = 0; turn += 2; }
+							if (pt == 3) { pt = 0; turn++; }
+							if (pt == 0) { pt1 = 'a'; turn += 2; }
+							if (uja == 0) { system("cls"); SetColor(7, 12); cout << "You Win!"; return 0; }
+						}
+						else if (uja == 0) {
+							if (pt == 0) { pt1 = '!'; turn += 2; }
+							if (pt == 1) { pt += 2; turn += 2; }
+							if (pt == 2) { pt++; turn++; }
+							if (pt == 3) { pt1 = '1'; turn += 2; }
+							if (ujs == 0) { system("cls"); SetColor(14, 6); cout << "You Win!"; return 0; }
+						}
+						else {
+							if (pt == 0) { pt1 = 'a'; turn += 2; }
+							if (pt == 1) { pt1 = '!'; turn += 2; }
+							if (pt == 2) { pt++; turn++; }
+							if (pt == 3) { pt1 = '1'; turn += 2; }
+						}
+					}
+					else if (ujs == 0) {
+						if (uja == 0) {
+							if (pt == 0) { pt1 = 'A'; turn += 2; }
+							if (pt == 1) { pt++; turn++; }
+							if (pt == 2) { pt++; turn++; }
+							if (pt == 3) { pt1 = '1'; turn += 2; }
+						}
+						else {
+							if (pt == 1) { pt1 = 'A';  turn += 2; }
+							if (pt == 2) { pt1 = '1'; turn += 2; }
+							if (pt == 3) { pt = 0; turn++; }
+							if (pt == 0) { pt1 = 'a'; turn += 2; }
+						}
+					}
+					else if (uja == 0) {
+						if (pt == 0) { pt1 = 'A'; turn += 2; }
+						if (pt == 1) { pt++; turn++; }
+						if (pt == 2) { pt1 = '!'; turn += 2; }
+						if (pt == 3) { pt1 = '1'; turn += 2; }
+					}
+				}
+				setcur(0, 0);
+				for (int i = 0; i < e; i++) {
+					for (int j = 0; j < e1; j++) {
+						if (ss1[i][j] <= '9' && ss1[i][j] > '0') { SetColor(7, 12); if (pt == 0) if (ss[i][j] != ss3[i][j]) { SetColor(10, 12); ss3[i][j] = ss[i][j]; } }
+						else if (ss1[i][j] >= 'a') { SetColor(11, 1); if (pt == 1)if (ss[i][j] != ss3[i][j]) { SetColor(10, 1); ss3[i][j] = ss[i][j]; } }
+						else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); if (pt == 2)if (ss[i][j] != ss3[i][j]) { SetColor(10, 5); ss3[i][j] = ss[i][j]; } }
+						else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); if (pt == 3)if (ss[i][j] != ss3[i][j]) { SetColor(10, 6); ss3[i][j] = ss[i][j]; } }
+						else if (ss[i][j] == ' ') SetColor(0, 8);
+						cout << ss[i][j];
+					}if (i == 3) {
+						SetColor(0, 0);
+						cout << ' ';
+						if (pt1 == '1') { SetColor(7, 12); }
+						else if (pt1 == 'a') { SetColor(11, 1); }
+						else if (pt1 == 'A') { SetColor(15, 5); }
+						else if (pt1 == '!') { SetColor(14, 6); }
+						cout << ' ';
+					}cout << endl;
+				}
+				setcur(0, 0);
+				for (int i = 0; i < e; i++) {
+					for (int j = 0; j < e1; j++) {
+						if (ss1[i][j] <= '4' && ss1[i][j] > '0') { SetColor(7, 12); }
+						else if (ss1[i][j] >= 'a') { SetColor(11, 1); }
+						else if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z') { SetColor(15, 5); }
+						else if (ss1[i][j] < '0' && ss1[i][j] != ' ') { SetColor(14, 6); }
+						else if (ss[i][j] == ' ') SetColor(0, 8);
+						cout << ss[i][j];
+						if (1)if (ta == 0)if (1)if (ss1[i][j] >= 'a')if (1)ta = 1;
+						if (t1 == 0)if (ss1[i][j] >= '1' && ss1[i][j] < '9')t1 = 1;
+						if (tA == 0)if (ss1[i][j] >= 'A' && ss1[i][j] < 'Z')tA = 1;
+						if (ts == 0)if (ss1[i][j] < '0' && ss1[i][j] != ' ')ts = 1;
+					}
+					if (i == 3) {
+						SetColor(0, 0);
+						cout << ' ';
+						if (pt1 == '1') { SetColor(7, 12); }
+						else if (pt1 == 'a') { SetColor(11, 1); }
+						else if (pt1 == 'A') { SetColor(15, 5); }
+						else if (pt1 == '!') { SetColor(14, 6); }
+						cout << ' ';
+					}cout << endl;
+				}
+			}
+		}
+	}
+}
+void fontsize(int a, int b) {
+	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+	lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+	GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+	lpConsoleCurrentFontEx->dwFontSize.X = a;
+	lpConsoleCurrentFontEx->dwFontSize.Y = b;
+	SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+}
